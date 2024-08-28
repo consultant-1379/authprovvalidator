@@ -1,0 +1,187 @@
+openapi: 3.0.2
+info:
+  title: Provisioning Validation-API
+  version: "0.0.2"
+servers:
+  - url: '{scheme}://{serviceName}/validation/v1/validate'
+    variables:
+      scheme:
+        enum:
+          - http
+        default: http
+      serviceName:
+        default: 'eric-validation-example'
+      namespace:
+        default: 'exampleNamespace'
+      apiVersion:
+        default: 'v1'
+      validationName:
+        default: 'exampleName'
+paths:
+  /validate:
+    post:
+      summary: Validate a set of changes.
+      tags:
+        - Validation
+      requestBody:
+        $ref: '#/components/requestBodies/validate'
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        400:
+          $ref: '#/components/responses/400'
+        408:
+          $ref: '#/components/responses/408'
+        409:
+          $ref: '#/components/responses/409'
+        413:
+          $ref: '#/components/responses/413'
+        414:
+          $ref: '#/components/responses/414'
+        415:
+          $ref: '#/components/responses/415'
+        422:
+          $ref: '#/components/responses/422'
+        429:
+          $ref: '#/components/responses/429'
+        500:
+          $ref: '#/components/responses/500'
+        503:
+          $ref: '#/components/responses/503'
+components:
+  schemas:
+    Change:
+      type: object
+      required:
+        - operation
+        - resource_path
+      properties:
+        operation:
+          type: string
+          enum:
+            - CREATE
+            - DELETE
+            - UPDATE
+        resource_path:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+    Error:
+      type: object
+      required:
+        - errorMessage
+      properties:
+        errorMessage:
+          type: string
+        errorDetails:
+          type: object
+          additionalProperties: true
+
+  requestBodies:
+    validate:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              changes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Change'
+              relatedResources:
+                type: object
+                additionalProperties: true
+  responses:
+      200:
+        description: 'Ok - Validation was successful.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                changes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Change'
+      400:
+        description: 'Bad Request'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      408:
+        description: 'Request Timeout'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      409:
+        description: 'Conflict - Validation was unsuccessful.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errors:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Error'
+      413:
+        description: 'Payload Too Large'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      414:
+        description: 'URI Too Long'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      415:
+        description: 'Unsupported Media Type'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      422:
+        description: 'Unprocessable Entity - Validation could not be performed.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errors:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Error'
+      429:
+        description: 'Too Many Requests'
+        headers:
+          Retry-After:
+              schema:
+                type: integer
+              description: Retry after x seconds
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      500:
+        description: 'Internal Server Error'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      503:
+        description: 'Service Unavailable'
+        headers:
+          Retry-After:
+              schema:
+                type: integer
+              description: Retry after x seconds
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'

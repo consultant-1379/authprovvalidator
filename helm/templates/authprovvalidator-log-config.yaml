@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "eric-udm-authprovvalidator.deploy.name" . }}-log-config
+{{- include "eric-udm-authprovvalidator.helm-labels" . | indent 2 }}
+{{- include "eric-udm-authprovvalidator.helm-annotations" . | indent 2 }}
+data:
+  logControl.json: |-
+    [
+    ]

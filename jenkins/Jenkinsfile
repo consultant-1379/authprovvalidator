@@ -1,0 +1,18 @@
+#!/usr/bin/env groovy
+
+@Library("PipelineGlobalLibrary") _
+
+
+mason {
+    repository         = 'HSS/CCDM/EDA/authprovvalidator'
+    namespace          = 'udm-5gcicd'    // Kubernetes namespace
+    languages          = 'cpp'
+    unit               = 'hss'
+    project_name       = 'eric-ccdmeda-authprovvalidator'
+
+    // Connect to the next phase in pipeline
+    next_job_name      = 'HSS_CCDM_EDA_FT_authprovvalidator'
+
+    // 3rd Parties to be skipped by Sonar
+    skip_paths = ['**/3pp/**/*', '**/test/**/*']
+}

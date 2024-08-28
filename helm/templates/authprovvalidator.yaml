@@ -1,0 +1,176 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "eric-udm-authprovvalidator.deploy.name" . }}
+{{- include "eric-udm-authprovvalidator.helm-labels" . | indent 2 }}
+    chart: {{ template "eric-udm-authprovvalidator.chart" . }}
+{{- include "eric-udm-authprovvalidator.helm-annotations" . | indent 2 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "eric-udm-authprovvalidator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.global.updateStrategy.type }}
+    {{- if and (eq .Values.global.updateStrategy.type "RollingUpdate") .Values.global.updateStrategy.rollingUpdate }}
+    rollingUpdate:
+      maxSurge: {{ .Values.global.updateStrategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.global.updateStrategy.rollingUpdate.maxUnavailable }}
+    {{- end }}
+  template:
+    metadata:
+{{- include "eric-udm-authprovvalidator.helm-labels" . | indent 6 }}
+        app: {{ .Values.service.name }}
+    spec:
+      automountServiceAccountToken: false
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      securityContext:
+        runAsUser: 1000
+        runAsNonRoot: true
+        runAsGroup: 1000
+        fsGroup: 1000
+      {{- if eq .Values.global.tolerations.enabled "on" }}
+      tolerations:
+      - key: "node.kubernetes.io/unreachable"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: {{ .Values.global.tolerations.seconds }}
+      - key: "node.kubernetes.io/not-ready"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: {{ .Values.global.tolerations.seconds }}
+      {{- end }}
+      {{- if or .Values.imageCredentials.registry.pullSecret .Values.global.registry.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.imageCredentials.registry.pullSecret | default .Values.global.registry.pullSecret | quote }}
+      {{- end }}
+      {{- with .Values.global.activation.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      volumes:
+      - name: log-config-volume
+        configMap:
+          name: {{ template "eric-udm-authprovvalidator.deploy.name" . }}-log-config
+      - name: corefile
+        emptyDir: {}
+{{- if eq .Values.global.resources.enabled "on"}}
+      - name: podinfo
+        downwardAPI:
+          items:
+            - path:  {{ .Values.global.monitorResources.cpu.validator | quote}}
+              resourceFieldRef:
+                containerName: {{ .Chart.Name }}
+                resource: requests.cpu
+                divisor: 1m
+{{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ template "eric-udm-authprovvalidator.registryUrl" . }}/{{ .Values.imageCredentials.repoPath }}/{{ .Values.images.authprovvalidator.name }}:{{ .Values.images.authprovvalidator.tag }}
+        imagePullPolicy: {{ required "A valid .Values.global.registry.imagePullPolicy entry is required!" .Values.global.registry.imagePullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - all
+        ports:
+        - containerPort: {{ .Values.service.port.http2 }}
+        resources:
+{{ toYaml .Values.resources.main | indent 10 }}
+        env:
+        - name: VALIDATORPORT
+          value: {{ .Values.service.port.http2 | quote }}
+        - name: OVERLOADPROTECTION
+          value: {{ .Values.global.overloadProtection.enabled | quote }}
+        - name: OAISCHEMAFILE
+          value: {{ .Values.env.schema.path | quote }}
+        - name: TZ
+          value: {{ .Values.global.timezone }}
+        - name: CPUREQUESTINFO
+          value: {{ .Values.global.monitorResources.volumePath }}/{{ .Values.global.monitorResources.cpu.validator }}
+        - name: LOGCONTROLPATH
+          value: /etc/provisioning/..data/logControl.json
+        volumeMounts:
+        - name: log-config-volume
+          mountPath: /etc/provisioning
+        - name: corefile
+          mountPath: /corefile
+{{- if eq .Values.global.resources.enabled "on"}}
+        - name: podinfo
+          mountPath: {{ .Values.global.monitorResources.volumePath | quote }}
+          readOnly: true
+        resources:
+{{ toYaml .Values.resources.main | indent 10 }}
+{{- end }}
+      - name: {{ .Values.sidecars.healthproxy.service.name }}
+        image: {{ template "eric-udm-authprovvalidator.registryUrl" . }}/{{ .Values.imageCredentials.repoPath }}/{{ .Values.sidecars.healthproxy.images.healthproxy.name }}:{{ .Values.sidecars.healthproxy.images.healthproxy.tag }}
+        imagePullPolicy: {{ required "A valid .Values.global.registry.imagePullPolicy entry is required!" .Values.global.registry.imagePullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - all
+        ports:
+        - containerPort: {{ .Values.sidecars.healthproxy.port.http }}
+        args:
+        - --port
+        - {{ .Values.sidecars.healthproxy.port.http | quote }}
+        - --ports-to-check
+        - {{ .Values.service.port.http2 | quote }}
+        - --serviceid
+        - {{ .Values.service.id | quote }}
+        - --servicename
+        - {{ .Values.service.name | quote }}
+        - --readiness-timeout
+        - {{ .Values.readinessProbe.timeoutSeconds | quote }}
+        - --networkfunction
+        - "Provisioning Function"
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: {{ .Values.sidecars.healthproxy.port.http }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+{{- if eq .Values.global.resources.enabled "on"}}
+        resources:
+{{ toYaml .Values.resources.healthproxy | indent 10 }}
+{{- end }}
+      restartPolicy: Always
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ .Values.service.name }}
+              topologyKey: "kubernetes.io/hostname"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "eric-udm-authprovvalidator.deploy.name" . }}
+{{- include "eric-udm-authprovvalidator.helm-labels" . | indent 2 }}
+    chart: {{ template "eric-udm-authprovvalidator.chart" . }}
+{{- include "eric-udm-authprovvalidator.helm-annotations" . | indent 2 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: http2-rest
+    port: {{ .Values.service.port.http2 }}
+    targetPort: {{ .Values.service.port.http2 }}
+  selector:
+    app: {{ .Values.service.name }}
+

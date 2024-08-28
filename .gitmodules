@@ -1,0 +1,15 @@
+[submodule "3pp/cpph2"]
+    path = 3pp/cpph2
+    url = ../../../CCSM/cpph2.git
+[submodule "3pp/cppopenapi"]
+    path = 3pp/cppopenapi
+    url = ../../../CCSM/cppopenapi.git
+[submodule "3pp/cpplog"]
+    path = 3pp/cpplog
+    url = ../../../CCSM/cpplog.git
+[submodule "3pp/cppcodec"]
+    path = 3pp/cppcodec
+    url = ../../../CCSM/cppcodec.git
+[submodule "3pp/cppmonitor"]
+    path = 3pp/cppmonitor
+    url = ../../../CCSM/cppmonitor.git

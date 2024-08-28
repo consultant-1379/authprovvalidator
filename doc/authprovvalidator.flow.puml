@@ -1,0 +1,23 @@
+@startuml
+hide footbox
+title authprovvalidator internal flow
+actor RESTclient
+box #WhiteSmoke
+participant "HTTP2 server"
+participant "JSON parser"
+participant "Validation rules"
+participant "JSON encoder"
+end box
+
+== Incoming REST  ==
+RESTclient -> "HTTP2 server" : POST /validate
+"HTTP2 server" -> "HTTP2 server" : Validate request according to OpenAPI
+"HTTP2 server" -> "JSON parser" : Parse json body to get list of changes and related resources
+"JSON parser" -> "JSON parser" : For each change to be validated, check type of every attribute of the resource is as expected
+"JSON parser" -> "Validation rules" : For each change, apply validation rules
+"Validation rules" -> "JSON encoder" : Encode response, either list of validated changes or list of errors
+"JSON encoder" -> "HTTP2 server" : Build response
+"HTTP2 server" -> RESTclient : Send response
+@enduml
+
+

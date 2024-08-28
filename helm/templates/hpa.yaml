@@ -1,0 +1,16 @@
+{{if and (eq .Values.global.hpa.enabled "on") (eq .Values.global.resources.enabled "on") }}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "eric-udm-authprovvalidator.deploy.name" . }}
+{{- include "eric-udm-authprovvalidator.helm-labels" . | indent 2 }}
+{{- include "eric-udm-authprovvalidator.helm-annotations" . | indent 2 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Values.service.name }}
+  minReplicas: {{ .Values.hpa.replicas.min }}
+  maxReplicas: {{ .Values.hpa.replicas.max }}
+  targetCPUUtilizationPercentage: {{ .Values.hpa.target.cpu }}
+{{end}}

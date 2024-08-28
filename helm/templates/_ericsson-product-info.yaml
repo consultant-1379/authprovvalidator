@@ -1,0 +1,7 @@
+{{- define "eric-udm-authprovvalidator.helm-annotations" }}
+annotations:
+  ericsson.com/product-name: "eric-udm-authprovvalidator"
+  ericsson.com/product-number: "CXD 101 0531"
+  ericsson.com/product-revision: "1.0.0"
+{{- end}}
+

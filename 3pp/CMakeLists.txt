@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.0.1)
+
+set(HTTP2_INCLUDES ${CMAKE_CURRENT_LIST_DIR}/cpph2/include)
+set(HTTP2_INCLUDES ${HTTP2_INCLUDES} PARENT_SCOPE)
+set(OAI_INCLUDES ${CMAKE_CURRENT_LIST_DIR}/cppopenapi/include)
+set(OAI_INCLUDES ${OAI_INCLUDES} PARENT_SCOPE)
+set(LOG_INCLUDES ${CMAKE_CURRENT_LIST_DIR}/cpplog/include)
+set(LOG_INCLUDES ${LOG_INCLUDES} PARENT_SCOPE)
+set(CODEC_INCLUDES ${CMAKE_CURRENT_LIST_DIR}/cppcodec/include)
+set(CODEC_INCLUDES ${CODEC_INCLUDES} PARENT_SCOPE)
+set(MONITOR_INCLUDES ${CMAKE_CURRENT_LIST_DIR}/cppmonitor/include)
+set(MONITOR_INCLUDES ${MONITOR_INCLUDES} PARENT_SCOPE)
+
+add_subdirectory(cpph2/src)
+add_subdirectory(cppopenapi/src)
+add_subdirectory(cpplog/src)
+add_subdirectory(cppcodec/src)
+add_subdirectory(cppmonitor/src)

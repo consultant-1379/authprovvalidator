@@ -1,0 +1,70 @@
+---
+modelVersion: "2.0"
+flavor: "Generic"
+service:
+  # name of the service:
+  name: "eric-udm-authprovvalidator"
+  # Trade Compliance
+  # !!!!!!!!!!!!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  # Please check the trade compliance value applicable to your
+  # product(s) before re-using this value!
+  # Design Country (set on the source products)
+  design_countries:
+    - SE
+  # Compilation Country (Set on the derivative products)
+  sw_compilation_country: SE
+  release_responsible: BDGSLFIA
+  design_responsible: BDGSLFIA
+
+  # Details of the APR product structure:
+  top_product:
+    # Note: all derivative_products automatically added to APR product structure
+    # APR Product Number
+    number: "APR 201 181"
+    description: "Microservice"
+    alias: ["5GCCSM-eric-udm-authprovvalidator"]
+    # Includes
+    includes:
+      # Sidecars
+      - munin: "CXU 101 0241"
+        version: "1.12.4"
+        comment: "eric-udm-healthproxy"
+  # Details of the Source product structure
+  src_products:
+    - label: "Source"
+      number: "CAV 101 484"
+      alias: ["5GCCSM-eric-udm-authprovvalidator"]
+      trade:
+        eu_eccn: "NA"
+        us_eccn: "EAR99"
+        aec: "0"
+  # Details of zero or more derivative product structures, use [] for zero
+  derivative_products:
+    # Label describing the product, must be uniq per list item
+    - label: "Helm"
+      number: "CXD 101 0531"
+      alias: ["5GCCSM-eric-udm-authprovvalidator"]
+      derivedFrom:
+        munin: "CAV 101 484"
+        # Helm doesn't contain 3PP's:
+      trade:
+        eu_eccn: "NA"
+        us_eccn: "EAR99"
+        aec: "0"
+    - label: "Image"
+      number: "CXU 101 0356"
+      alias: ["5GCCSM-eric-ccdmeda-authprovvalidator"]
+      derivedFrom:
+        munin: "CAV 101 484"
+      includes:
+        # Common Base OS
+        - prim: CXC 201 2032/3
+          rstate: R30A
+        # 3PP's:
+      uses_foss:
+        # Import FOSS dependencies from dependencies.yaml file
+        - dependencies_file: dependencies_no_fossa_cpp_validators.yaml
+      trade:
+        eu_eccn: "NA"
+        us_eccn: "EAR99"
+        aec: "0"

@@ -1,0 +1,95 @@
+replicaCount: 2
+resources:
+  main:
+    requests:
+      cpu: 1000m
+      memory: 50Mi
+    limits:
+      cpu: 1000m
+      memory: 100Mi
+  healthproxy:
+    requests:
+      cpu: 5m
+      memory: 20Mi
+    limits:
+      cpu: 5m
+      memory: 20Mi
+
+hpa:
+  replicas:
+    min: 2
+    max: 10
+  target:
+    cpu: 70
+
+images:
+  authprovvalidator:
+    name: eric-ccdmeda-authprovvalidator
+    tag: do_not_change_to_be_updated_by_pipeline
+
+service:
+  name: eric-udm-authprovvalidator
+  id: eric-udm-validation
+  type: ClusterIP
+  port:
+    http2: 9002
+
+env:
+  schema:
+    path: /bin/authprovvalidator.yaml
+
+sidecars:
+  healthproxy:
+    images:
+      healthproxy:
+        name: eric-udm-healthproxy
+        tag: "1.12.4"
+    service:
+      name: healthproxy
+    port:
+      http: 9400
+
+imageCredentials:
+  repoPath: proj_hss/5g/docker_images
+  registry:
+    # overrides global registry url
+    # url: armdocker.seli.ericsson.se
+    pullSecret:
+
+global:
+  registry:
+    url: armdocker.rnd.ericsson.se
+    pullSecret:
+    imagePullPolicy: IfNotPresent
+  updateStrategy:
+  # Supported types are Recreate and RollingUpdate
+  # In case of rolling update you can also specify the maxSurge and maxUnavailable parameters.
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: "50%"
+  hpa:
+    enabled: "off"
+  resources:
+    enabled: "on"
+  overloadProtection:
+    enabled: "on" # Enable "on" / Disable "off" overload protection mechanism
+  timezone: UTC
+  tolerations:
+    enabled: "on"
+    seconds: 300
+  monitorResources:
+    volumePath: "/etc/podinfo"
+    cpu:
+      validator: "main_cpu_request"
+  activation:
+    nodeSelector: {}
+      # define the nodeSelector if applicable
+      # if you want to specify nodeSelector, uncomment the following lines,
+      # adjust them as necessary, and remove the curly braces after 'nodeSelector:'.
+      # 5gc-ericsson-se/vnf: ccxx
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 3
+  timeoutSeconds: 2
+  failureThreshold: 2

@@ -1,0 +1,256 @@
+modelVersion: '1.1'
+dependencies:
+- ID: boost+1.75.0
+  bazaar:
+    register: 'no'
+    prim: 43/CAX1053305
+    community_link: http://www.boost.org/
+    community_name: http://www.boost.org/
+    community_url: http://www.boost.org/
+    component_comment: ''
+    component_highlevel_description: ''
+    component_name: Boost C ++ Library
+    component_platform: linux
+    component_programing_language: ''
+    component_version: 1.75.0
+    licenses:
+    - 'FAL1159000: Other FOSS licenses'
+    src_download_link: https://dl.bintray.com/boostorg/release/1.75.0/source/boost_1_75_0.tar.gz
+    stako_decision_reason: automatic
+    stako: ESW2
+    crypto: ''
+    stako_comment: Component meets the criteria for unrestricted use but it does not meet the criteria defined for a preferred component.
+    bazaarurl: https://bazaar.internal.ericsson.com/b-view-component.php?componentid=964937
+  encryptions:
+    used:
+    - ''
+  evms:
+    register: 'yes'
+    product_name: boost
+    target_sw: linux
+    vendor: bintray
+    version: boost-1.75.0
+    web_url: http://www.boost.org/
+  licenses:
+  - FAL1159041/10
+  - BSL-1.0
+  name: boost
+  primary:
+  - this
+  selected_license: BSL-1.0
+  subcomponent: false
+  type: FOSS
+  versions:
+  - boost-1.75.0
+  alerts:
+  - ''
+- ID: nghttp2+1.41.0
+  bazaar:
+    register: 'no'
+    prim: 14/CAX1059896
+    community_link: https://github.com/nghttp2/nghttp2
+    community_name: https://github.com/nghttp2/nghttp2
+    community_url: https://github.com/nghttp2/nghttp2
+    component_comment: ''
+    component_highlevel_description: ''
+    component_name: nghttp2
+    component_platform: linux
+    component_programing_language: ''
+    component_version: 1.41.0
+    licenses:
+    - 'FAL1159008: MIT License (MIT)'
+    src_download_link: https://github.com/nghttp2/nghttp2/releases/download/v1.41.0/nghttp2-1.41.0.tar.gz
+    stako_decision_reason: automatic
+    stako: ESW2
+    crypto: ''
+    stako_comment: ''
+    bazaarurl: https://bazaar.internal.ericsson.com/b-view-component.php?componentid=936740
+  encryptions:
+    used:
+    - ''
+  evms:
+    register: 'yes'
+    product_name: nghttp2
+    target_sw: linux
+    vendor: git
+    version: 1.41.0
+    web_url: https://github.com/nghttp2/nghttp2
+  licenses:
+  - MIT
+  name: nghttp2
+  primary:
+  - this
+  selected_license: MIT
+  subcomponent: false
+  type: FOSS
+  versions:
+  - 1.41.0
+- ID: openssl+1.1.1k
+  bazaar:
+    register: 'no'
+    prim: 109/CAX1053048
+    community_link: https://github.com/openssl/openssl
+    community_name: https://github.com/openssl/openssl
+    community_url: https://github.com/openssl/openssl
+    component_comment: ''
+    component_highlevel_description: ''
+    component_name: OpenSSL
+    component_platform: linux
+    component_programing_language: ''
+    component_version: 1.1.1K
+    licenses:
+    - 'FAL1159170: OpenSSL License (OpenSSL)'
+    - 'FAL1159244: Original SSLeay License'
+    src_download_link: https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1k.zip
+    stako_decision_reason: automatic
+    stako: ESW2
+    crypto: ''
+    stako_comment: ''
+    bazaarurl: https://bazaar.internal.ericsson.com/b-view-component.php?componentid=965212
+  encryptions:
+    used:
+    - ''
+  evms:
+    register: 'yes'
+    product_name: openssl
+    target_sw: linux
+    vendor: git
+    version: OpenSSL_1_1_1k
+    web_url: https://github.com/openssl/openssl
+  licenses:
+  - OpenSSL
+  name: openssl
+  primary:
+  - this
+  selected_license: OpenSSL
+  subcomponent: false
+  type: FOSS
+  versions:
+  - OpenSSL_1_1_1k
+- ID: protobuf+3.14.0
+  bazaar:
+    register: 'no'
+    prim: 39/CAX1054389
+    community_link: https://github.com/protocolbuffers/protobuf
+    community_name: https://github.com/protocolbuffers/protobuf
+    community_url: https://github.com/protocolbuffers/protobuf
+    component_comment: ''
+    component_highlevel_description: ''
+    component_name: Protocol Buffers (protobuf)
+    component_platform: linux
+    component_programing_language: ''
+    component_version: 3.14.0
+    licenses:
+    - 'FAL1159003/2: BSD 3-Clause "New" or "Revised" License (BSD-3-Clause)'
+    src_download_link: https://github.com/protocolbuffers/protobuf/archive/v3.14.0.zip
+    stako_decision_reason: automatic
+    stako: ESW3
+    crypto: ''
+    stako_comment: Newer versions exists
+    bazaarurl: https://bazaar.internal.ericsson.com/b-view-component.php?componentid=947356&category=
+  encryptions:
+    used:
+    - ''
+  evms:
+    register: 'yes'
+    product_name: protobuf
+    target_sw: linux
+    vendor: git
+    version: 3.14.0
+    web_url: https://github.com/protocolbuffers/protobuf
+  licenses:
+  - BSD-3-Clause
+  name: protobuf
+  primary:
+  - this
+  selected_license: BSD-3-Clause
+  subcomponent: false
+  type: FOSS
+  versions:
+  - 3.14.0
+  alerts:
+  - Stako is 'ESW3', BAZAAR component is not recommended to be used
+- ID: RapidJSON+f56928de85d56add3ca6ae7cf7f119a42ee1585b
+  bazaar:
+    register: 'no'
+    prim: 7/CAX1056251
+    community_link: http://rapidjson.org/
+    community_name: http://rapidjson.org/
+    community_url: http://rapidjson.org/
+    component_comment: ''
+    component_highlevel_description: ''
+    component_name: RapidJSON
+    component_platform: linux
+    component_programing_language: ''
+    component_version: COMMIT20200713
+    licenses:
+    - 'FAL1159008: MIT License (MIT)'
+    src_download_link: https://github.com/Tencent/rapidjson/archive/f56928de85d56add3ca6ae7cf7f119a42ee1585b.zip
+    stako_decision_reason: automatic
+    stako: ESW2
+    crypto: ''
+    stako_comment: ''
+    bazaarurl: https://bazaar.internal.ericsson.com/b-view-component.php?componentid=940728
+  encryptions:
+    used:
+    - ''
+  evms:
+    register: 'yes'
+    product_name: rapidjson
+    target_sw: linux
+    vendor: git
+    version: f56928de85d56add3ca6ae7cf7f119a42ee1585b
+    web_url: http://rapidjson.org/
+  licenses:
+  - MIT
+  name: rapidjson
+  primary:
+  - this
+  selected_license: MIT
+  subcomponent: false
+  type: FOSS
+  versions:
+  - f56928de85d56add3ca6ae7cf7f119a42ee1585b
+- ID: yaml-cpp+0.6.3
+  bazaar:
+    register: 'no'
+    prim: 5/CTX1021388
+    community_link: https://github.com/jbeder/yaml-cpp
+    community_name: https://github.com/jbeder/yaml-cpp
+    community_url: https://github.com/jbeder/yaml-cpp
+    component_comment: ''
+    component_highlevel_description: ''
+    component_name: yaml-cpp
+    component_platform: linux
+    component_programing_language: ''
+    component_version: 0.6.3
+    licenses:
+    - 'FAL1159008: MIT License (MIT)'
+    src_download_link: https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.6.3.tar.gz
+    stako_decision_reason: automatic
+    stako: ESW3
+    crypto: ''
+    stako_comment: Product version is older than 18 months
+    bazaarurl: https://bazaar.internal.ericsson.com/b-view-component.php?componentid=929676
+  encryptions:
+    used:
+    - ''
+  evms:
+    register: 'yes'
+    product_name: yaml-cpp
+    target_sw: linux
+    vendor: git
+    version: yaml-cpp-0.6.3
+    web_url: https://github.com/jbeder/yaml-cpp
+  licenses:
+  - MIT
+  name: yaml-cpp
+  primary:
+  - this
+  selected_license: MIT
+  subcomponent: false
+  type: FOSS
+  versions:
+  - yaml-cpp-0.6.3
+  alerts:
+  - Stako is 'ESW3', BAZAAR component is not recommended to be used
